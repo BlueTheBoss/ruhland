@@ -1,0 +1,59 @@
+{
+    "$schema": "/etc/xdg/swaync/configSchema.json",
+    "positionX": "right",
+    "positionY": "top",
+    "control-center-margin-top": 8,
+    "control-center-margin-bottom": 8,
+    "control-center-margin-right": 8,
+    "notification-icon-size": 40,
+    "notification-body-image-height": 160,
+    "timeout": 6,
+    "control-center-width": 380,
+    "control-center-height": 600,
+    "notification-window-width": 380,
+    "keyboard-shortcuts": true,
+    "image-visibility": "when-available",
+    "hide-on-clear": false,
+    "hide-on-action": true,
+    "widgets": [
+        "inhibitors",
+        "title",
+        "dnd",
+        "notifications",
+        "mpris",
+        "volume",
+        "buttons-grid"
+    ],
+    "widget-config": {
+        "inhibitors": {
+            "text": "Inhibitors",
+            "button-text": "Clear All",
+            "clear-all-button": true
+        },
+        "title": {
+            "text": "Notifications",
+            "clear-all-button": true,
+            "button-text": "Clear All"
+        },
+        "dnd": {
+            "text": "Do Not Disturb"
+        },
+        "mpris": {
+            "image-size": 48,
+            "image-radius": 8
+        },
+        "volume": {
+            "label": "Volume"
+        },
+        "buttons-grid": {
+            "actions": [
+                { "label": "", "command": "wlogout" },
+                { "label": "", "command": "hyprlock" },
+                { "label": "", "command": "hyprshot -m region" },
+                { "label": "", "command": "bash $HOME/.config/hypr/hyprland/scripts/wallpaper.sh -r" },
+                { "label": "", "command": "pavucontrol" },
+                { "label": "", "command": "kitty btop" }
+            ]
+        }
+    }
+}

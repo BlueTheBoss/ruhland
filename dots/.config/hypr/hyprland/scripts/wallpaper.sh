@@ -44,13 +44,7 @@ set_wallpaper() {
         echo "→ Generating Material You colors..."
         matugen image "$img" >/dev/null 2>&1 || true
         killall -SIGUSR2 kitty 2>/dev/null || true
-        # Copy colors to Quickshell theme path
-        local qs_colors_dir="$HOME/.local/state/quickshell/user/generated"
-        mkdir -p "$qs_colors_dir"
-        if [[ -f "$HOME/.config/matugen/colors.json" ]]; then
-            cp "$HOME/.config/matugen/colors.json" "$qs_colors_dir/colors.json"
-            echo "✓ Quickshell colors updated"
-        fi
+        pkill -SIGUSR1 waybar 2>/dev/null || true
         echo "✓ Colors applied"
     fi
 }

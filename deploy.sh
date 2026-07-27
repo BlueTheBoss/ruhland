@@ -55,25 +55,6 @@ deploy_settings() {
     echo -e "${GREEN}Deployed${NC} settings"
 }
 
-deploy_quickshell() {
-    local src="$REPO_ROOT/quickshell"
-    local target="$HOME/.config/quickshell"
-
-    $DRY_RUN && echo -e "${YELLOW}Would deploy${NC} quickshell -> $target" && return
-
-    if [[ -e "$target" && ! -L "$target" ]]; then
-        mkdir -p "$BACKUP_DIR"
-        cp -r "$target" "$BACKUP_DIR/"
-        echo -e "${YELLOW}Backed up${NC} quickshell -> $BACKUP_DIR/"
-        rm -rf "$target"
-    elif [[ -L "$target" ]]; then
-        rm -f "$target"
-    fi
-
-    ln -sf "$src" "$target"
-    echo -e "${GREEN}Deployed${NC} quickshell"
-}
-
 deploy_fonts_gs() {
     local gs_dir="$HOME/.local/share/fonts/ruhland-google-sans-flex"
     if [[ ! -d "$gs_dir" ]]; then
@@ -85,7 +66,6 @@ deploy_fonts_gs() {
 
 echo -e "${CYAN}━━━ Ruhland Deploy ━━━${NC}"
 deploy_configs
-deploy_quickshell
 deploy_settings
 deploy_fonts_gs
 echo -e "${GREEN}Done.${NC}"

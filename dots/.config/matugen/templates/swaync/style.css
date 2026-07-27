@@ -1,0 +1,44 @@
+* { font-family: "Google Sans Flex", "JetBrainsMono Nerd Font"; font-size: 14px; }
+
+.notification {
+    background: rgba({{colors.surface.dark.hex_stripped}}F2);
+    border: 1px solid {{colors.outline_variant.default.hex}};
+    border-radius: 12px;
+    margin: 4px 8px;
+}
+
+.notification-default-action:hover { background: {{colors.surface_container_low.default.hex}}; }
+
+.close-button {
+    background: {{colors.error.default.hex}};
+    color: {{colors.on_error.default.hex}};
+    border: none;
+    border-radius: 50%;
+}
+
+.summary { color: {{colors.on_surface.default.hex}}; font-weight: bold; }
+.body { color: {{colors.on_surface_variant.default.hex}}; }
+
+.control-center {
+    background: rgba({{colors.surface.dark.hex_stripped}}F7);
+    border: 1px solid {{colors.outline_variant.default.hex}};
+    border-radius: 16px;
+}
+
+.widget-title { color: {{colors.on_surface.default.hex}}; }
+.widget-title > button { background: {{colors.surface_container.default.hex}}; border: none; border-radius: 8px; color: {{colors.on_surface.default.hex}}; }
+
+.widget-buttons-grid > button {
+    background: {{colors.surface_container.default.hex}};
+    border: 1px solid {{colors.outline_variant.default.hex}};
+    border-radius: 12px;
+    color: {{colors.on_surface.default.hex}};
+}
+
+.widget-buttons-grid > button:active { background: {{colors.primary.default.hex}}; color: {{colors.on_primary.default.hex}}; }
+
+.widget-volume { background: {{colors.surface_container.default.hex}}; border-radius: 12px; }
+.widget-volume > slider:highlight { background: {{colors.primary.default.hex}}; }
+
+.widget-mpris { background: {{colors.surface_container.default.hex}}; border-radius: 12px; }
+.widget-mpris-title { color: {{colors.on_surface.default.hex}}; }

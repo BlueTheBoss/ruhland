@@ -5,17 +5,19 @@ source "$REPO_ROOT/sdata/lib/functions.sh"
 # ── Package groups ──────────────────────────────────────────────
 # Each group: name="description|pkg1 pkg2 ..."
 RICE_PKG_GROUPS=(
-    "base|Core rice tools|swww quickshell-git"
+    "base|Core rice tools|waybar swaync swww wofi"
     "media|Audio, video, brightness|pipewire wireplumber pipewire-pulse wireplumber playerctl brightnessctl pavucontrol"
     "screenshot|Screenshot & recording|grim slurp hyprshot swappy wf-recorder"
     "clipboard|Clipboard management|cliphist wl-clipboard"
     "fonts|Font stack|ttf-jetbrains-mono-nerd ttf-material-symbols-variable ttf-readex-pro otf-space-grotesk noto-fonts-emoji"
     "shell|Shell experience|fish starship eza bat ripgrep fd"
     "misc|Utility tools|jq polkit-kde-agent gnome-keyring bluez-utils network-manager-applet"
-    "theming|Dynamic colors & UI|matugen-bin yad bibata-cursor-theme"
+    "theming|Dynamic colors & UI|matugen-bin swayosd yad bibata-cursor-theme"
 )
 
-RICE_PKG_META=()
+RICE_PKG_META=(
+    "quickshell-git|Quickshell shell (if you want it)|quickshell-git"
+)
 
 install_package_group() {
     local group_name="$1"

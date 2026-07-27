@@ -18,13 +18,13 @@ hl.bind("SUPER + B", hl.dsp.exec_cmd("pkill -SIGUSR1 waybar"), { description = "
 --##! Utilities
 hl.bind("Print", hl.dsp.exec_cmd("grim -o \"$(hyprctl activeworkspace -j | jq -r '.monitor')\" - | wl-copy"),
     { locked = true, description = "Utilities: Screenshot >> clipboard" })
-hl.bind("SUPER + Print", hl.dsp.exec_cmd(
+hl.bind("CTRL + Print", hl.dsp.exec_cmd(
     "mkdir -p $(xdg-user-dir PICTURES)/Screenshots && " ..
     "grim -o \"$(hyprctl activeworkspace -j | jq -r '.monitor')\" $(xdg-user-dir PICTURES)/Screenshots/Screenshot_\"$(date '+%Y-%m-%d_%H.%M.%S')\".png"
 ), { locked = true, non_consuming = true, description = "Utilities: Screenshot >> file" })
-hl.bind("SUPER + SHIFT + Print", hl.dsp.exec_cmd(
+hl.bind("CTRL + Print", hl.dsp.exec_cmd(
     "grim -o \"$(hyprctl activeworkspace -j | jq -r '.monitor')\" - | wl-copy"
-), { locked = true, non_consuming = true, description = "Utilities: Screenshot >> clipboard (alt)" })
+), { locked = true, non_consuming = true })
 hl.bind("SUPER + SHIFT + S",
     hl.dsp.exec_cmd("pidof slurp || hyprshot --freeze --clipboard-only --mode region --silent"),
     { description = "Utilities: Region screenshot" })
@@ -49,7 +49,7 @@ hl.bind("SUPER + Period", hl.dsp.exec_cmd(
 --# Recording
 hl.bind("SUPER + SHIFT + R", hl.dsp.exec_cmd(hyprScripts .. "/record.sh region"),
     { locked = true, description = "Utilities: Record region" })
-hl.bind("SUPER + ALT + R", hl.dsp.exec_cmd(hyprScripts .. "/record.sh fullscreen"),
+hl.bind("CTRL + ALT + R", hl.dsp.exec_cmd(hyprScripts .. "/record.sh fullscreen"),
     { locked = true, description = "Utilities: Record fullscreen" })
 hl.bind("SUPER + SHIFT + ALT + R", hl.dsp.exec_cmd(hyprScripts .. "/record.sh fullscreen-audio"),
     { locked = true, description = "Utilities: Record fullscreen with audio" })
@@ -57,9 +57,9 @@ hl.bind("SUPER + SHIFT + ALT + S", hl.dsp.exec_cmd(hyprScripts .. "/record.sh st
     { locked = true, description = "Utilities: Stop recording" })
 
 --# Wallpaper
-hl.bind("SUPER + ALT + W", hl.dsp.exec_cmd("bash $HOME/.config/hypr/hyprland/scripts/wallpaper.sh"),
+hl.bind("CTRL + SUPER + T", hl.dsp.exec_cmd("bash $HOME/.config/hypr/hyprland/scripts/wallpaper.sh"),
     { description = "Utilities: Change wallpaper" })
-hl.bind("SUPER + ALT + SHIFT + W", hl.dsp.exec_cmd("bash $HOME/.config/hypr/hyprland/scripts/wallpaper.sh -r"),
+hl.bind("CTRL + SUPER + ALT + T", hl.dsp.exec_cmd("bash $HOME/.config/hypr/hyprland/scripts/wallpaper.sh -r"),
     { description = "Utilities: Random wallpaper" })
 
 --##! Media
@@ -171,12 +171,12 @@ end
 hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "e-1" }))
 
---# Workspace left/right
+--# Keyboard workspace left/right
 for i = 1, 2 do
     local keys = { "Left", "Right" }
     local prefix = { "r-", "r+" }
     local descdir = { "left", "right" }
-    hl.bind("SUPER + " .. keys[i], hl.dsp.focus({ workspace = prefix[i] .. "1" }),
+    hl.bind("CTRL + SUPER + " .. keys[i], hl.dsp.focus({ workspace = prefix[i] .. "1" }),
         {description = "Workspace: Focus " .. descdir[i]})
 end
 
@@ -216,22 +216,23 @@ end)
 hl.bind("SUPER + L", hl.dsp.exec_cmd("loginctl lock-session"), { description = "Session: Lock" })
 hl.bind("SUPER + SHIFT + L", hl.dsp.exec_cmd("systemctl suspend || loginctl suspend"),
     { locked = true, description = "Session: Sleep" })
+hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("pkill wlogout || wlogout -p layer-shell"),
+    { description = "Session: Logout menu" })
 hl.bind("SUPER + Escape", hl.dsp.exec_cmd("pkill wlogout || wlogout -p layer-shell"),
     { description = "Session: Logout menu" })
-hl.bind("SUPER + SHIFT + Q", hl.dsp.exec_cmd("systemctl poweroff || loginctl poweroff"),
+hl.bind("CTRL + SHIFT + ALT + SUPER + Delete", hl.dsp.exec_cmd("systemctl poweroff || loginctl poweroff"),
     { description = "Session: Shut down" })
 
 --##! Apps
 hl.bind("SUPER + Return", hl.dsp.exec_cmd(terminal), { description = "App: Terminal" })
 hl.bind("SUPER + T", hl.dsp.exec_cmd(terminal))
-hl.bind("SUPER + ALT + Return", hl.dsp.exec_cmd(terminal), { description = "App: Terminal (alt)" })
+hl.bind("CTRL + ALT + T", hl.dsp.exec_cmd(terminal))
 hl.bind("SUPER + E", hl.dsp.exec_cmd(fileManager), { description = "App: File manager" })
 hl.bind("SUPER + W", hl.dsp.exec_cmd(browser), { description = "App: Browser" })
 hl.bind("SUPER + C", hl.dsp.exec_cmd(codeEditor), { description = "App: Code editor" })
 hl.bind("SUPER + X", hl.dsp.exec_cmd(textEditor), { description = "App: Text editor" })
 hl.bind("SUPER + I", hl.dsp.exec_cmd(settingsApp), { description = "App: Settings" })
-hl.bind("SUPER + COMMA", hl.dsp.exec_cmd("bash $HOME/settings/ruhland-settings"),
+hl.bind("CTRL + SUPER + S", hl.dsp.exec_cmd("bash $HOME/settings/ruhland-settings"),
     { description = "App: Ruhland Settings" })
-hl.bind("SUPER + SHIFT + Escape", hl.dsp.exec_cmd(taskManager), { description = "App: Task manager" })
-hl.bind("SUPER + ALT + V", hl.dsp.exec_cmd(volumeMixer), { description = "App: Volume mixer" })
-hl.bind("SUPER + CTRL + T", hl.dsp.exec_cmd(terminal .. " -e htop"), { description = "App: Htop" })
+hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd(taskManager), { description = "App: Task manager" })
+hl.bind("CTRL + SUPER + V", hl.dsp.exec_cmd(volumeMixer), { description = "App: Volume mixer" })

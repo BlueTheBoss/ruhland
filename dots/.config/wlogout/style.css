@@ -1,0 +1,53 @@
+* {
+    font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", sans-serif;
+    background: transparent;
+}
+
+window {
+    background: rgba(30, 30, 46, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+button {
+    background: rgba(49, 50, 68, 0.9);
+    border: 2px solid #45475a;
+    border-radius: 16px;
+    color: #cdd6f4;
+    font-size: 32px;
+    margin: 12px;
+    padding: 24px;
+    min-width: 100px;
+    min-height: 80px;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background: #cba6f7;
+    border-color: #cba6f7;
+    color: #1e1e2e;
+    box-shadow: 0 0 20px rgba(203, 166, 247, 0.4);
+}
+
+button:focus {
+    background: #cba6f7;
+    border-color: #cba6f7;
+    color: #1e1e2e;
+}
+
+#lock { border-color: #89dceb; }
+#lock:hover { background: #89dceb; border-color: #89dceb; color: #1e1e2e; }
+
+#logout { border-color: #f9e2af; }
+#logout:hover { background: #f9e2af; border-color: #f9e2af; color: #1e1e2e; }
+
+#suspend { border-color: #89b4fa; }
+#suspend:hover { background: #89b4fa; border-color: #89b4fa; color: #1e1e2e; }
+
+#hibernate { border-color: #fab387; }
+#hibernate:hover { background: #fab387; border-color: #fab387; color: #1e1e2e; }
+
+#reboot { border-color: #a6e3a1; }
+#reboot:hover { background: #a6e3a1; border-color: #a6e3a1; color: #1e1e2e; }
+
+#shutdown { border-color: #f38ba8; }
+#shutdown:hover { background: #f38ba8; border-color: #f38ba8; color: #1e1e2e; }
