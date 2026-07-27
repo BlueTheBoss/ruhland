@@ -12,7 +12,7 @@ update_run() {
         else
             log_warning "Git pull failed. Check your remote or local changes."
             ask "Continue anyway?" || exit 0
-        end
+        fi
     fi
 
     # ── Re-deploy configs ───────────────────────────────────────
