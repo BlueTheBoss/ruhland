@@ -37,13 +37,13 @@ settings_appearance() {
 
     local form=$(
         yad --form --title="Ruhland — Appearance" --center --width=400 \
-            --field="Gaps (inner):NUM" "$gaps_in!0..50!1!0" \
-            --field="Gaps (outer):NUM" "$gaps_out!0..50!1!0" \
-            --field="Border width:NUM" "$border_size!0..10!1!0" \
-            --field="Window rounding:NUM" "$rounding!0..30!1!0" \
-            --field="Active opacity:NUM" "$active_opacity!0.1..1.0!0.1!1" \
-            --field="Inactive opacity:NUM" "$inactive_opacity!0.1..1.0!0.1!1" \
-            --field="Dim inactive:NUM" "$dim_strength!0..0.5!0.01!2" \
+            --field="Gaps (inner)!Spacing between adjacent windows in pixels:NUM" "$gaps_in!0..50!1!0" \
+            --field="Gaps (outer)!Spacing between windows and screen edges in pixels:NUM" "$gaps_out!0..50!1!0" \
+            --field="Border width!Thickness of window borders in pixels:NUM" "$border_size!0..10!1!0" \
+            --field="Window rounding!Corner rounding radius for windows in pixels (0 for sharp corners):NUM" "$rounding!0..30!1!0" \
+            --field="Active opacity!Opacity level of the focused window (0.1 to 1.0):NUM" "$active_opacity!0.1..1.0!0.1!1" \
+            --field="Inactive opacity!Opacity level of unfocused windows (0.1 to 1.0):NUM" "$inactive_opacity!0.1..1.0!0.1!1" \
+            --field="Dim inactive!Dimming strength for unfocused windows (0 to 0.5):NUM" "$dim_strength!0..0.5!0.01!2" \
             --button="Apply:0" --button="Cancel:1"
     )
 
@@ -155,8 +155,7 @@ main_menu() {
         local action
         action=$(yad --list --title="Ruhland Settings" --center --width=450 --height=350 \
             --text="<b>Ruhland Configuration</b>" \
-            --column="Icon:IMG" --column="Setting:TEXT" --column="Description:TEXT" \
-            --hide-column=3 \
+            --column="Icon:IMG" --column="Setting:TEXT" --column="Description:TIP" \
             --print-column=2 \
             --button="Exit:1" \
             "preferences-system" "Appearance" "Gaps, borders, opacity, rounding" \
