@@ -8,12 +8,12 @@ KEYBINDS_CONF="$CONFIG_DIR/hyprland/keybinds.lua"
 WALLPAPER_DIR="$HOME/Wallpaper"
 
 get_val() {
-    grep -oP "(?<=$1 = )[0-9.]+" "$HYPRLAND_CONF" 2>/dev/null || echo "0"
+    grep -oP "(?<=\b$1 = )[0-9.]+" "$HYPRLAND_CONF" 2>/dev/null || echo "0"
 }
 
 set_val() {
     local key="$1" val="$2"
-    sed -i "s/$key = [0-9.]*/$key = $val/" "$HYPRLAND_CONF"
+    sed -i "s/\b$key\b = [0-9.]*/$key = $val/" "$HYPRLAND_CONF"
 }
 
 settings_appearance() {
@@ -28,19 +28,25 @@ settings_appearance() {
 
     local form=$(
         yad --form --title="Ruhland — Appearance" --center --width=400 \
-            --field="Gaps (inner):NUM" "$gaps_in!0..50!1" \
-            --field="Gaps (outer):NUM" "$gaps_out!0..50!1" \
-            --field="Border width:NUM" "$border_size!0..10!1" \
-            --field="Window rounding:NUM" "$rounding!0..30!1" \
-            --field="Active opacity:NUM" "$active_opacity!0.1..1.0!0.1" \
-            --field="Inactive opacity:NUM" "$inactive_opacity!0.1..1.0!0.1" \
-            --field="Dim inactive:NUM" "$dim_strength!0..0.5!0.01" \
+            --field="Gaps (inner):NUM" "$gaps_in!0..50!1!0" \
+            --field="Gaps (outer):NUM" "$gaps_out!0..50!1!0" \
+            --field="Border width:NUM" "$border_size!0..10!1!0" \
+            --field="Window rounding:NUM" "$rounding!0..30!1!0" \
+            --field="Active opacity:NUM" "$active_opacity!0.1..1.0!0.1!1" \
+            --field="Inactive opacity:NUM" "$inactive_opacity!0.1..1.0!0.1!1" \
+            --field="Dim inactive:NUM" "$dim_strength!0..0.5!0.01!2" \
             --button="Apply:0" --button="Cancel:1"
     )
 
     [[ $? -ne 0 ]] && return
 
     IFS='|' read -r gi go bs ro ao io ds <<< "$form"
+
+    # Normalize floating-point numbers to use dot instead of comma for non-US locales
+    ao="${ao//,/.}"
+    io="${io//,/.}"
+    ds="${ds//,/.}"
+
     set_val "gaps_in" "$gi"
     set_val "gaps_out" "$go"
     set_val "border_size" "$bs"
