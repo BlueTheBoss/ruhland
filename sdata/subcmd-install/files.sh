@@ -40,6 +40,21 @@ install_files() {
         done
     fi
 
+    # ── Deploy quickshell ───────────────────────────────────────
+    if ask "Deploy Quickshell config?"; then
+        local qs_src="$REPO_ROOT/quickshell"
+        local qs_target="$HOME/.config/quickshell"
+        if [[ -e "$qs_target" && ! -L "$qs_target" ]]; then
+            cp -r "$qs_target" "$BACKUP_DIR/$(date +%Y%m%d-%H%M%S)/quickshell"
+            rm -rf "$qs_target"
+        elif [[ -L "$qs_target" ]]; then
+            rm -f "$qs_target"
+        fi
+        ln -sf "$qs_src" "$qs_target"
+        listfile_add "$qs_target"
+        log_success "  Linked quickshell"
+    fi
+
     # ── Matugen first run ───────────────────────────────────────
     if [[ -f "$HOME/Wallpaper/current" ]] || [[ -d "$HOME/Wallpaper" && "$(ls -A "$HOME/Wallpaper" 2>/dev/null)" ]]; then
         local first_wall
