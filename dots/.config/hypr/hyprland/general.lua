@@ -91,17 +91,18 @@ hl.config({
     },
 })
 
-hl.curve("emphasizedDecel", {
+-- Standard Material Design 3 and custom Bezier Curves
+hl.curve("md3_standard", {
+    type = "bezier",
+    points = {{0.2, 0}, {0, 1}}
+})
+hl.curve("md3_decel", {
     type = "bezier",
     points = {{0.05, 0.7}, {0.1, 1}}
 })
-hl.curve("emphasizedAccel", {
+hl.curve("md3_accel", {
     type = "bezier",
     points = {{0.3, 0}, {0.8, 0.15}}
-})
-hl.curve("standardDecel", {
-    type = "bezier",
-    points = {{0, 0}, {0, 1}}
 })
 hl.curve("menu_decel", {
     type = "bezier",
@@ -116,20 +117,42 @@ hl.curve("stall", {
     points = {{1, -0.1}, {0.7, 0.85}}
 })
 
-hl.animation({ leaf = "windowsIn", enabled = true, speed = 3, bezier = "emphasizedDecel", style = "popin 80%" })
-hl.animation({ leaf = "fadeIn", enabled = true, speed = 3, bezier = "emphasizedDecel" })
-hl.animation({ leaf = "windowsOut", enabled = true, speed = 2, bezier = "emphasizedDecel", style = "popin 90%" })
-hl.animation({ leaf = "fadeOut", enabled = true, speed = 2, bezier = "emphasizedDecel" })
-hl.animation({ leaf = "windowsMove", enabled = true, speed = 3, bezier = "emphasizedDecel", style = "slide" })
-hl.animation({ leaf = "border", enabled = true, speed = 10, bezier = "emphasizedDecel" })
-hl.animation({ leaf = "layersIn", enabled = true, speed = 2.7, bezier = "emphasizedDecel", style = "popin 93%" })
-hl.animation({ leaf = "layersOut", enabled = true, speed = 2.4, bezier = "menu_accel", style = "popin 94%" })
+-- Modern spring curves for ultra fluid physics (Hyprland 0.55+ / 0.56+)
+-- Mass, stiffness, and dampening are tuned for responsive snaps with premium bounce
+hl.curve("spring_window", {
+    type = "spring",
+    mass = 1,
+    stiffness = 160,
+    dampening = 21
+})
+hl.curve("spring_workspace", {
+    type = "spring",
+    mass = 1,
+    stiffness = 130,
+    dampening = 20
+})
+hl.curve("spring_special", {
+    type = "spring",
+    mass = 1,
+    stiffness = 140,
+    dampening = 18
+})
+
+-- Up-to-date modern animation configurations
+hl.animation({ leaf = "windowsIn", enabled = true, speed = 4, spring = "spring_window", style = "popin 85%" })
+hl.animation({ leaf = "fadeIn", enabled = true, speed = 3, bezier = "md3_decel" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 3.5, spring = "spring_window", style = "popin 90%" })
+hl.animation({ leaf = "fadeOut", enabled = true, speed = 2, bezier = "md3_decel" })
+hl.animation({ leaf = "windowsMove", enabled = true, speed = 4, spring = "spring_window", style = "slide" })
+hl.animation({ leaf = "border", enabled = true, speed = 10, bezier = "md3_decel" })
+hl.animation({ leaf = "layersIn", enabled = true, speed = 3.5, spring = "spring_window", style = "popin 93%" })
+hl.animation({ leaf = "layersOut", enabled = true, speed = 3, spring = "spring_window", style = "popin 94%" })
 hl.animation({ leaf = "fadeLayersIn", enabled = true, speed = 0.5, bezier = "menu_decel" })
-hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 2.7, bezier = "stall" })
-hl.animation({ leaf = "workspaces", enabled = true, speed = 7, bezier = "menu_decel", style = "slide" })
-hl.animation({ leaf = "specialWorkspaceIn", enabled = true, speed = 2.8, bezier = "emphasizedDecel", style = "slidevert" })
-hl.animation({ leaf = "specialWorkspaceOut", enabled = true, speed = 1.2, bezier = "emphasizedAccel", style = "slidevert" })
-hl.animation({ leaf = "zoomFactor", enabled = true, speed = 3, bezier = "standardDecel" })
+hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 3, bezier = "stall" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 5, spring = "spring_workspace", style = "slide" })
+hl.animation({ leaf = "specialWorkspaceIn", enabled = true, speed = 4, spring = "spring_special", style = "slidevert" })
+hl.animation({ leaf = "specialWorkspaceOut", enabled = true, speed = 3, spring = "spring_special", style = "slidevert" })
+hl.animation({ leaf = "zoomFactor", enabled = true, speed = 3, bezier = "md3_standard" })
 
 hl.config({
     input = {
