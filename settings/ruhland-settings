@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+# Ruhland Settings UI — yad-based configuration panel
+set -euo pipefail
+
+CONFIG_DIR="$HOME/.config/hypr"
+HYPRLAND_CONF="$CONFIG_DIR/hyprland/general.lua"
+KEYBINDS_CONF="$CONFIG_DIR/hyprland/keybinds.lua"
+WALLPAPER_DIR="$HOME/Wallpaper"
+
+get_val() {
+    grep -oP "(?<=$1 = )\d+" "$HYPRLAND_CONF" 2>/dev/null || echo "0"
+}
+
+set_val() {
+    local key="$1" val="$2"
+    sed -i "s/$key = [0-9.]*/$key = $val/" "$HYPRLAND_CONF"
+}
+
+settings_appearance() {
+    local gaps_in gaps_out border_size rounding active_opacity inactive_opacity dim_strength
+    gaps_in=$(get_val "gaps_in")
+    gaps_out=$(get_val "gaps_out")
+    border_size=$(get_val "border_size")
+    rounding=$(get_val "rounding")
+    active_opacity=$(get_val "active_opacity")
+    inactive_opacity=$(get_val "inactive_opacity")
+    dim_strength=$(get_val "dim_strength")
+
+    local form=$(
+        yad --form --title="Ruhland — Appearance" --center --width=400 \
+            --field="Gaps (inner):NUM" "$gaps_in!0..50!1" \
+            --field="Gaps (outer):NUM" "$gaps_out!0..50!1" \
+            --field="Border width:NUM" "$border_size!0..10!1" \
+            --field="Window rounding:NUM" "$rounding!0..30!1" \
+            --field="Active opacity:NUM" "$active_opacity!0.1..1.0!0.1" \
+            --field="Inactive opacity:NUM" "$inactive_opacity!0.1..1.0!0.1" \
+            --field="Dim inactive:NUM" "$dim_strength!0..0.5!0.01" \
+            --button="Apply:0" --button="Cancel:1"
+    )
+
+    [[ $? -ne 0 ]] && return
+
+    IFS='|' read -r gi go bs ro ao io ds <<< "$form"
+    set_val "gaps_in" "$gi"
+    set_val "gaps_out" "$go"
+    set_val "border_size" "$bs"
+    set_val "rounding" "$ro"
+    set_val "active_opacity" "$ao"
+    set_val "inactive_opacity" "$io"
+    set_val "dim_strength" "$ds"
+
+    hyprctl reload
+    notify-send "Appearance updated" "Changes applied" -a "Ruhland"
+}
+
+settings_wallpaper() {
+    if ! command -v yad &>/dev/null; then
+        notify-send "Error" "yad is required for file selection" -a "Ruhland"
+        exit 1
+    fi
+
+    local img
+    img=$(yad --file --title="Select Wallpaper" --add-preview --large-preview \
+        --file-filter="Images | *.jpg *.jpeg *.png *.webp *.bmp" \
+        --filename="$WALLPAPER_DIR/")
+
+    [[ -z "$img" ]] && return
+
+    bash "$HOME/.config/hypr/hyprland/scripts/wallpaper.sh" "$img"
+    notify-send "Wallpaper changed" "Colors regenerated" -a "Ruhland"
+}
+
+settings_keybinds_help() {
+    yad --text-info --title="Ruhland — Keybinds Reference" --center --width=600 --height=500 \
+        --filename=<(
+            cat <<'EOF'
+<b>Ruhland Keybinds</b>
+
+<b>Applications</b>
+  Super + Return  — Terminal
+  Super + W       — Browser
+  Super + E       — File Manager
+  Super + C       — Code Editor
+  Super + X       — Text Editor
+  Super + I       — Settings
+  Super + Space   — Launcher (wofi)
+
+<b>Window Management</b>
+  Super + Q       — Close window
+  Super + F       — Fullscreen
+  Super + D       — Maximize
+  Super + P       — Pin window
+  Super + Alt+Space — Toggle float
+  Super + arrows  — Focus direction
+  Super + Shift+arrows — Move window
+
+<b>Workspaces</b>
+  Super + 1-0     — Switch workspace
+  Super + Shift+1-0 — Move to workspace
+  Super + S       — Toggle scratchpad
+  Super + Alt+S   — Send to scratchpad
+  Ctrl+Super+←/→  — Workspace left/right
+
+<b>Media</b>
+  XF86Audio*      — Volume controls
+  XF86MonBrightness* — Brightness
+  Super+Shift+P   — Play/pause
+  Super+Shift+N   — Next track
+  Super+Shift+B   — Previous track
+
+<b>Screenshots</b>
+  Print           — Screenshot to clipboard
+  Ctrl+Print      — Screenshot to file
+  Super+Shift+S   — Region screenshot
+  Super+Shift+R   — Record region
+  Super+Shift+Alt+R — Record with audio
+
+<b>Utilities</b>
+  Super+V         — Clipboard history
+  Super+.         — Emoji picker
+  Super+Shift+C   — Color picker
+  Super+L         — Lock
+  Ctrl+Alt+Delete — Power menu
+  Super+Escape    — Power menu
+
+<b>Settings</b>
+  $0              — This settings panel
+EOF
+        ) --button="Close:0"
+}
+
+settings_about() {
+    yad --title="About Ruhland" --center --width=400 --height=300 \
+        --text="<big><b>Ruhland</b></big>\n\nA Hyprland rice by armevox\n\nInspired by end-4/illogical-impulse\n\nTheme: Catppuccin Mocha → Material You\n\nStack: Hyprland + Waybar + Wofi + Swaync + swww" \
+        --button="Close:0"
+}
+
+main_menu() {
+    while true; do
+        local action
+        action=$(yad --list --title="Ruhland Settings" --center --width=450 --height=350 \
+            --text="<b>Ruhland Configuration</b>" \
+            --column="Icon:IMG" --column="Setting:TEXT" --column="Description:TEXT" \
+            --hide-column=3 \
+            --print-column=2 \
+            --button="Exit:1" \
+            "preferences-system" "Appearance" "Gaps, borders, opacity, rounding" \
+            "preferences-desktop-wallpaper" "Wallpaper" "Change wallpaper + regenerate colors" \
+            "input-keyboard" "Keybinds" "View keybind reference" \
+            "help-about" "About" "About Ruhland" \
+            2>/dev/null || break)
+
+        case "$action" in
+            Appearance) settings_appearance ;;
+            Wallpaper) settings_wallpaper ;;
+            Keybinds) settings_keybinds_help ;;
+            About) settings_about ;;
+            *) break ;;
+        esac
+    done
+}
+
+# If no args, or first arg is the script itself
+main_menu

@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "━━━ Ruhland Diagnose ━━━"
+echo ""
+
+check() {
+    local label="$1" cmd="$2"
+    if eval "$cmd" &>/dev/null; then
+        echo -e "  ✓ $label"
+    else
+        echo -e "  ✗ $label"
+    fi
+}
+
+check_ver() {
+    local label="$1" ver_cmd="$2"
+    local ver
+    ver=$(eval "$ver_cmd" 2>/dev/null || echo "not found")
+    echo -e "  $label: $ver"
+}
+
+echo "→ System:"
+check_ver "  OS" "grep -oP '(?<=^PRETTY_NAME=\").*(?=\")' /etc/os-release"
+check_ver "  Kernel" "uname -r"
+echo ""
+
+echo "→ Core tools:"
+check_ver "  Hyprland" "hyprctl version 2>/dev/null | head -1 | grep -oP 'v\K[^ ]+' || echo 'not running'"
+check_ver "  swww" "swww --version 2>/dev/null || echo 'not installed'"
+check_ver "  waybar" "waybar --version 2>/dev/null | head -1 || echo 'not installed'"
+check_ver "  swaync" "swaync --version 2>/dev/null || echo 'not installed'"
+check_ver "  wofi" "wofi --version 2>/dev/null || echo 'not installed'"
+check_ver "  wlogout" "wlogout --version 2>/dev/null || echo 'not installed'"
+check_ver "  matugen" "matugen --version 2>/dev/null || echo 'not installed'"
+check_ver "  swayosd" "swayosd-server --version 2>/dev/null || echo 'not installed'"
+check_ver "  yad" "yad --version 2>/dev/null || echo 'not installed'"
+check_ver "  kitty" "kitty --version 2>/dev/null || echo 'not installed'"
+check_ver "  fish" "fish --version 2>/dev/null || echo 'not installed'"
+check_ver "  starship" "starship --version 2>/dev/null | head -1 || echo 'not installed'"
+echo ""
+
+echo "→ Fonts:"
+check_ver "  JetBrainsMono Nerd" "fc-list | grep -qi 'JetBrainsMono.*Nerd' && echo 'yes'"
+check_ver "  Material Symbols" "fc-list | grep -qi 'Material Symbols' && echo 'yes'"
+check_ver "  Google Sans Flex" "fc-list | grep -qi 'Google Sans Flex' && echo 'yes'"
+check_ver "  Readex Pro" "fc-list | grep -qi 'Readex Pro' && echo 'yes'"
+check_ver "  Space Grotesk" "fc-list | grep -qi 'Space Grotesk' && echo 'yes'"
+check_ver "  Bibata cursor" "ls /usr/share/icons/Bibata-Modern-Classic 2>/dev/null && echo 'yes' || echo 'no'"
+echo ""
+
+echo "→ Config symlinks:"
+for dir in hypr waybar wofi swaync wlogout kitty fastfetch cava matugen fontconfig fish; do
+    target="$HOME/.config/$dir"
+    if [[ -L "$target" ]]; then
+        echo -e "  ✓ $dir -> $(readlink "$target")"
+    elif [[ -d "$target" ]]; then
+        echo -e "  ! $dir (local copy, not symlinked to ruhland)"
+    else
+        echo -e "  ✗ $dir (missing)"
+    fi
+done
+
+echo ""
+echo "→ Settings UI:"
+if [[ -L "$HOME/settings" ]]; then
+    echo -e "  ✓ settings -> $(readlink "$HOME/settings")"
+elif [[ -f "$HOME/settings/ruhland-settings" ]]; then
+    echo -e "  ! settings (local copy)"
+else
+    echo -e "  ✗ settings (missing)"
+fi
+
+echo ""
+echo "→ Shell:"
+check_ver "  starship.toml" "test -f $HOME/.config/starship.toml && echo 'yes'"
+check_ver "  fontconfig" "test -f $HOME/.config/fontconfig/fonts.conf && echo 'yes'"
+check_ver "  fish config" "test -f $HOME/.config/fish/config.fish && echo 'yes'"

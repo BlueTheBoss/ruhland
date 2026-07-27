@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#  Ruhland — Hyprland Rice Manager
+#  Inspired by end-4/illogical-impulse
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+
+# ── Bootstrap ───────────────────────────────────────────────────
+source "$REPO_ROOT/sdata/lib/environment.sh"
+source "$REPO_ROOT/sdata/lib/functions.sh"
+source "$REPO_ROOT/sdata/lib/packages.sh"
+
+prevent_sudo_or_root
+
+show_help() {
+    echo -e "${STY_CYAN}${STY_BOLD}Ruhland — Hyprland Rice Manager${STY_RST}"
+    echo ""
+    echo "Usage: $0 <subcommand> [OPTIONS]"
+    echo ""
+    echo "Subcommands:"
+    echo "  install       Install packages, setup system, deploy configs"
+    echo "  uninstall     Remove Ruhland configs"
+    echo "  update        Pull latest changes, re-deploy configs"
+    echo "  packages      Install/update packages only"
+    echo "  deploy        Deploy configs only (symlink)"
+    echo "  help          Show this help"
+    echo ""
+    echo "For subcommand help: $0 <subcommand> --help"
+}
+
+case "${1:-}" in
+    install)
+        shift
+        source "$REPO_ROOT/sdata/subcmd-install/options.sh"
+        parse_install_options "$@"
+        source "$REPO_ROOT/sdata/subcmd-install/greeting.sh"
+        install_greeting
+        sudo_init_keepalive
+        [[ "$INSTALL_SKIP_DEPS" != "true" ]] && source "$REPO_ROOT/sdata/subcmd-install/deps.sh" && install_deps
+        [[ "$INSTALL_SKIP_SETUPS" != "true" ]] && source "$REPO_ROOT/sdata/subcmd-install/setups.sh" && install_setups
+        [[ "$INSTALL_SKIP_FILES" != "true" ]] && source "$REPO_ROOT/sdata/subcmd-install/files.sh" && install_files
+        sudo_stop_keepalive
+        ;;
+
+    uninstall)
+        shift
+        source "$REPO_ROOT/sdata/subcmd-uninstall/options.sh"
+        parse_uninstall_options "$@"
+        source "$REPO_ROOT/sdata/subcmd-uninstall/run.sh"
+        uninstall_run
+        ;;
+
+    update)
+        shift
+        source "$REPO_ROOT/sdata/subcmd-update/options.sh"
+        parse_update_options "$@"
+        source "$REPO_ROOT/sdata/subcmd-update/run.sh"
+        sudo_init_keepalive
+        update_run
+        sudo_stop_keepalive
+        ;;
+
+    packages)
+        shift
+        sudo_init_keepalive
+        install_all_packages
+        install_google_sans_flex
+        sudo_stop_keepalive
+        ;;
+
+    deploy)
+        shift
+        bash "$REPO_ROOT/deploy.sh"
+        ;;
+
+    help|--help|-h|"")
+        show_help
+        ;;
+
+    *)
+        echo -e "${STY_RED}Unknown subcommand: $1${STY_RST}"
+        echo "Usage: $0 <subcommand> (use -h for help)"
+        exit 1
+        ;;
+esac

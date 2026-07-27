@@ -1,0 +1,30 @@
+[general]
+framerate = 60
+bars = 16
+bar_width = 4
+bar_spacing = 2
+
+[color]
+background = '#1e1e2e'
+gradient = 1
+gradient_count = 8
+gradient_color_1 = '#f38ba8'
+gradient_color_2 = '#f5c2e7'
+gradient_color_3 = '#cba6f7'
+gradient_color_4 = '#89b4fa'
+gradient_color_5 = '#89dceb'
+gradient_color_6 = '#94e2d5'
+gradient_color_7 = '#a6e3a1'
+gradient_color_8 = '#f9e2af'
+
+[smoothing]
+monstercat = 1
+noise_reduction = 30
+
+[input]
+method = pulse
+source = auto
+
+[output]
+channels = stereo
+autosens = 1

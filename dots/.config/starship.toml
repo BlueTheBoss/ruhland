@@ -1,0 +1,67 @@
+format = """
+[](#cba6f7)$username$hostname[](#cba6f7)$fill$directory$git_branch$git_status$fill$cmd_duration$time[](#cba6f7)$shell[](#cba6f7)
+[ ▶](bg:#1e1e2e fg:#cba6f7) """
+
+right_format = "$character"
+
+[character]
+success_symbol = "[ ](bg:#1e1e2e fg:#a6e3a1)"
+error_symbol = "[ ](bg:#1e1e2e fg:#f38ba8)"
+vicmd_symbol = "[ ](bg:#1e1e2e fg:#cba6f7)"
+
+[username]
+show_always = false
+style_user = "bg:#cba6f7 fg:#1e1e2e"
+format = "[ $user ]($style)"
+
+[hostname]
+ssh_only = true
+style_host = "bg:#cba6f7 fg:#1e1e2e"
+format = "@$hostname"
+
+[directory]
+style = "bg:#1e1e2e fg:#cdd6f4"
+format = "[ $path ]($style)"
+truncation_length = 4
+truncate_to_repo = true
+
+[directory.substitutions]
+"Documents" = "  "
+"Downloads" = "  "
+"Music" = "  "
+"Pictures" = "  "
+"Videos" = "  "
+"Desktop" = "  "
+"Projects" = "  "
+
+[git_branch]
+style = "bg:#1e1e2e fg:#89b4fa"
+format = "[ $symbol$branch ]($style)"
+symbol = "󰘬 "
+
+[git_status]
+style = "bg:#1e1e2e fg:#f9e2af"
+format = "[$all_status$ahead_behind ]($style)"
+conflicted = "🏳"
+up_to_date = ""
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+
+[cmd_duration]
+style = "bg:#1e1e2e fg:#fab387"
+format = "[ 󰪢 $duration ]($style)"
+show_milliseconds = false
+min_time = 2000
+
+[time]
+disabled = false
+style = "bg:#1e1e2e fg:#a6adc8"
+format = "[ $time ]($style)"
+time_format = "%I:%M %p"
+
+[shell]
+disabled = false
+style = "bg:#cba6f7 fg:#1e1e2e"
+format = "[ $indicator ]($style)"
+fish_indicator_symbol = "󰈺"
