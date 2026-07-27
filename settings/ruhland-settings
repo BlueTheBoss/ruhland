@@ -13,6 +13,15 @@ get_val() {
 
 set_val() {
     local key="$1" val="$2"
+    # Security: Strict allowlist validation of key and val to prevent command injection (e.g. GNU sed '/e' flag)
+    if [[ ! "$key" =~ ^[a-zA-Z0-9_]+$ ]]; then
+        echo "Error: Invalid character in key '$key'" >&2
+        return 1
+    fi
+    if [[ ! "$val" =~ ^[0-9.]+$ ]]; then
+        echo "Error: Invalid character in value '$val' for setting '$key'" >&2
+        return 1
+    fi
     sed -i "s/\b$key\b = [0-9.]*/$key = $val/" "$HYPRLAND_CONF"
 }
 

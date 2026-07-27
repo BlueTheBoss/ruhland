@@ -12,9 +12,20 @@ end
 
 function create_if_not_exists(path)
    if not is_file_exists(path) then
-      os.execute("mkdir -p \"$(dirname \"" .. path .. "\")\"")
-      os.execute("echo '-- This file will not be overwritten across ruhland updates.' > \"" .. path .. "\"")
-      return true
+      -- Security: Block potential shell metacharacters to prevent command injection
+      if path:find("[;&|`%$]") then
+         return false
+      end
+      -- Escape path securely for the shell
+      local escaped_path = path:gsub("\\", "\\\\"):gsub("\"", "\\\"")
+      os.execute("mkdir -p \"$(dirname \"" .. escaped_path .. "\")\"")
+      -- Security: Use safe Lua standard I/O to write the file, completely avoiding any shell spawn
+      local f = io.open(path, "w")
+      if f ~= nil then
+         f:write("-- This file will not be overwritten across ruhland updates.\n")
+         f:close()
+         return true
+      end
    end
    return false
 end
