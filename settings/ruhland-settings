@@ -8,7 +8,7 @@ KEYBINDS_CONF="$CONFIG_DIR/hyprland/keybinds.lua"
 WALLPAPER_DIR="$HOME/Wallpaper"
 
 get_val() {
-    grep -oP "(?<=$1 = )\d+" "$HYPRLAND_CONF" 2>/dev/null || echo "0"
+    grep -oP "(?<=$1 = )[0-9.]+" "$HYPRLAND_CONF" 2>/dev/null || echo "0"
 }
 
 set_val() {
