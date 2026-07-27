@@ -38,9 +38,7 @@ hl.config({
             active_border = "rgba(cba6f7FF)",
             inactive_border = "rgba(45475aFF)"
         },
-        cursor_inactive_timeout = 3,
         layout = "dwindle",
-        no_border_on_floating = false,
         resize_on_border = true,
         no_focus_fallback = true,
         allow_tearing = true,
